@@ -1,25 +1,43 @@
+import java.time.Duration;
 
-public class Chiamata {
+class Chiamata {
 	private String numero;
-	private int minutiChiamata;
+	private Duration duration;
+	private Boolean isReceived;
 	
-	
-	public Chiamata(String numero, int minutiChiamata) {
+	Chiamata(String numero, Duration duration, Boolean isReceived){
+		this.duration = duration;
 		this.numero = numero;
-		this.minutiChiamata = minutiChiamata;
+		this.isReceived = isReceived;
 	}
 	
+	/**
+	 * Returns the phone number of this data
+	 * @return the phone number
+	 */
 	public String getNumero() {
 		return numero;
 	}
+	
+	/**
+	 * Set actual phone number to the new one
+	 * @param number the new phone number REQUIRE not null String, no characters except '+' '-' ' ' and numbers
+	 */
 	public void setNumero(String numero) {
 		this.numero = numero;
 	}
-	public int getTempo() {
-		return minutiChiamata;
+	
+	
+	public Duration getDuration() {
+		return duration;
 	}
-	public void setTempo(int tempo) {
-		this.minutiChiamata = minutiChiamata;
+	
+	public void setDuration(Duration duration) {
+		this.duration = duration;
 	}
-
+	
+	public Boolean isReceived() {
+		return isReceived;
+	}
+	
 }

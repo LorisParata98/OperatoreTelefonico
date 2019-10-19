@@ -1,61 +1,60 @@
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.lang.reflect.Array;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Scanner;
+import java.io.*;
+import java.util.*;
 
 public class OperatoreTelefonico {
 	public static Scanner scan = new Scanner(System.in);
 
-	private static SIM[] sims = new SIM[10];
+	List<SIM> listOfSim;
+	List<String> numeriAssegnati, pukAssegnati;
+	List<Person> clienti = new ArrayList<Person>();
 
-	public static SIM creaSim() {
-		SIM sim_nuova = new SIM();
-		for (int i = 0; i < sims.length; i++) {
-			if (sims[i] == null) {
+	public OperatoreTelefonico() {
+		listOfSim = new ArrayList<SIM>();
+		numeriAssegnati = new ArrayList<String>();
+		pukAssegnati = new ArrayList<String>();
 
-				System.out.println("Inserisci informazioni");
-				System.out.println("Numero telefonico: ");
-				String numero = scan.next();
-				System.out.println("Codice puk :");
-				String puk = scan.next();
-				System.out.println("Proprietario: ");
-				String proprietario = scan.next();
-				scan.next();
-				System.out.println("Credito iniziale: ");
-				int credito = scan.nextInt();
-				Date dataPrimaRicarica = new Date();
+	}
 
-				sim_nuova = new SIM(numero, puk, proprietario, credito, dataPrimaRicarica);
-				sims[i] = sim_nuova;
-				break;
-			}
+	public SIM creaSim() {
 
-		}
+		System.out.println("Inserisci informazioni");
+		System.out.println("Numero telefonico: ");
+		String numero = scan.next();
+		System.out.println("Codice puk :");
+		String puk = scan.next();
+		System.out.println("Nome :");
+		String nome = scan.next();
+		System.out.println("Cognome :");
+		String cognome = scan.next();
+		scan.next();
+		Person proprietario = SearchProprietario(nome, cognome);
+
+		SIM sim_nuova = new SIM(proprietario, puk, numero);
+		listOfSim.add(sim_nuova);
+
 		return sim_nuova;
 	}
 
-	public static void portabilizzaSim() {
+	private Person SearchProprietario(String nome, String cognome) {
+		Person clienteCercato = new Person();
+		for (int i = 0; i < clienti.size(); i++) {
+			if ((clienti.get(i).getNome() == nome) && (clienti.get(i).getCognome() == cognome))
+				clienteCercato = clienti.get(i);
+		}
+		return clienteCercato;
+	}
+
+	public void portabilizzaSim() {
 		System.out.println("Inserisci numero della sim di provenienza");
 		String numeroDiProvenienza = scan.next();
-		for (int i = 0; i < sims.length; i++) {
-			if ((sims[i] != null) && (sims[i].getNumeroDiTelefono().equals(numeroDiProvenienza))) {
+		for (int i = 0; i < listOfSim.size(); i++) {
+			if (listOfSim.get(i).getNumeroDiTelefono().equals(numeroDiProvenienza)) {
 
-				SIM sim_daPortabilizzare = new SIM(numeroDiProvenienza, sims[i].getPUK(), sims[i].getProprietario(),
-						sims[i].getCreditoDisponibile(), sims[i].getDataUltimaRicarica());
+				SIM sim_daPortabilizzare = new SIM(listOfSim.get(i).getNumeroDiTelefono(), listOfSim.get(i));
 
-				for (int j = 0; j < sims.length; j++) {
+				listOfSim.add(sim_daPortabilizzare);
 
-					if (sims[j] == null) {
-						sims[j] = sim_daPortabilizzare;
-						break;
-
-					}
-
-				}
-				copiaListaChiamate(sims[i], sim_daPortabilizzare);
+				copiaListaChiamate(listOfSim.get(i), sim_daPortabilizzare);
 				System.out.println("Copia effettuata");
 				sim_daPortabilizzare.setPortabilizzata(true);
 				System.out.println("Sim portabilizzata!");
@@ -67,27 +66,19 @@ public class OperatoreTelefonico {
 	}
 
 	public static void copiaListaChiamate(SIM sim_diProvenienza, SIM sim_daPortabilizzare) {
-
-		System.out.println(sim_diProvenienza.chiamateEffettuate[0]);
 		{
-			for (int j = 0; j < sim_diProvenienza.chiamateEffettuate.length; j++) {
-				if (sim_diProvenienza.chiamateEffettuate != null) {
-					if (sim_daPortabilizzare == null) {
-						sim_daPortabilizzare.insertChiamate(sim_diProvenienza.chiamateEffettuate[j].getNumero(),
-								sim_diProvenienza.chiamateEffettuate[j].getTempo());
-					}
-				}
-				System.out.println("Nessuna chiamata da copiare!");
+			for (int j = 0; j < sim_diProvenienza.chiamate.size(); j++) {
+				sim_daPortabilizzare.insertChiamate(sim_diProvenienza.chiamate.get(j));
 			}
 		}
-
+		System.out.println("Nessuna chiamata da copiare!");
 	}
 
 	public void deleteSim() {
 		String numeroSimDaEliminare = scan.next();
-		for (int i = 0; i < sims.length; i++) {
-			if (sims[i].getNumeroDiTelefono() == numeroSimDaEliminare)
-				sims[i] = null;
+		for (int i = 0; i < listOfSim.size(); i++) {
+			if (listOfSim.get(i).getNumeroDiTelefono() == numeroSimDaEliminare)
+				listOfSim.remove(listOfSim.get(i));
 		}
 		System.out.println("Sim non presente!");
 	}
@@ -98,17 +89,17 @@ public class OperatoreTelefonico {
 		String numeroSimDaTrovare = scan.next();
 		SIM simCercata = searchSimWithNumber(numeroSimDaTrovare);
 		if (simCercata.getNumeroDiTelefono() == numeroSimDaTrovare) {
-			for (int i = 0; i < simCercata.chiamateEffettuate.length; i++) {
-				System.out.println(simCercata.chiamateEffettuate[i].getNumero());
-				System.out.println("Durata: " + simCercata.chiamateEffettuate[i].getTempo());
+			for (int i = 0; i < simCercata.chiamate.size(); i++) {
+				System.out.println(simCercata.chiamate.get(i).getNumero());
+				System.out.println("Durata: " + simCercata.chiamate.get(i).getDuration());
 			}
 		}
 	}
 
 	public boolean isPortabilizzata(String num) {
-		for (int i = 0; i < sims.length; i++) {
-			if (sims[i].getNumeroDiTelefono().equals(num)) {
-				return sims[i].getPortabilizzata();
+		for (int i = 0; i < listOfSim.size(); i++) {
+			if (listOfSim.get(i).getNumeroDiTelefono().equals(num)) {
+				return listOfSim.get(i).getPortabilizzata();
 			}
 		}
 		return false;
@@ -116,7 +107,7 @@ public class OperatoreTelefonico {
 
 	@SuppressWarnings("deprecation")
 	// controlla se la scheda è ancora attiva
-	public static boolean isAttiva(String numeroDaControllare) {
+	public boolean isAttiva(String numeroDaControllare) {
 		boolean simAttiva = false;
 		Date dataUltimaRicarica = new Date(); // stampa data attuale
 		dataUltimaRicarica.setYear(dataUltimaRicarica.getYear() - 1); // sottrae 1 anno dalla data attuale
@@ -126,7 +117,7 @@ public class OperatoreTelefonico {
 		return simAttiva;
 	}
 
-	public static void usingPrintWriter(String num) throws IOException {
+	public void saveDataInFile(String num) throws IOException {
 		String fileContent = "";
 
 		FileWriter fileWriter = new FileWriter(
@@ -140,43 +131,17 @@ public class OperatoreTelefonico {
 		printWriter.close();
 	}
 
-	private static SIM searchSimWithNumber(String num) {
+	private SIM searchSimWithNumber(String num) {
 		SIM finded = new SIM();
-		for (int i = 0; i < sims.length; i++) {
-			if ((sims[i] != null) && (sims[i].getNumeroDiTelefono().equals(num)))
-				finded = sims[i];
+		for (int i = 0; i < listOfSim.size(); i++) {
+			if (listOfSim.get(i).getNumeroDiTelefono().equals(num))
+				finded = listOfSim.get(i);
 		}
 		System.out.println("Sim Trovata!");
 		return finded;
 	}
 
 	public static void main(String[] args) throws IOException {
-
-		// SIM sim1 = creaSim();
-
-		SIM sim2 = new SIM("3486785337", "1234", "Loris Parata", 20, new Date());
-		sims[0] = sim2;
-		SIM sim3 = new SIM("348455337", "1234", "Loris P4a", 20, new Date());
-		sims[1] = sim3;
-		SIM sim4 = new SIM("1234", "1234", "Ls Parata", 20, new Date());
-		sims[2] = sim4;
-
-		sim2.insertChiamate("3486785337", 13);
-		sim2.insertChiamate("3486785337", 12);
-		sim2.minutiTotaliChiamate();
-		sim2.toStringChiamate();
-		/*
-		 * sim2.attivaPromozione(); sim2.attivaPromozione(); sim2.getPromozioniAttive();
-		 * sim2.disattivaPromozione(); sim2.getPromozioniAttive();
-		 */
-		// System.out.println(isAttiva("3486785337"));
-		portabilizzaSim();
-		System.out.println(Arrays.deepToString(sims));
-		
-
-		// System.out.println(searchSimWithNumber("3486785337"));
-
-		// usingPrintWriter("3486785337");
 
 	}
 }// end class OperatoreTelefonico
