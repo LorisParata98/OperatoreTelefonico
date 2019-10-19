@@ -9,6 +9,7 @@ public class OperatoreTelefonico {
 	List<Person> clienti = new ArrayList<Person>();
 
 	public OperatoreTelefonico() {
+		
 		listOfSim = new ArrayList<SIM>();
 		numeriAssegnati = new ArrayList<String>();
 		pukAssegnati = new ArrayList<String>();
@@ -118,11 +119,11 @@ public class OperatoreTelefonico {
 	}
 
 	public void saveDataInFile(String num) throws IOException {
+		
 		String fileContent = "";
-
 		FileWriter fileWriter = new FileWriter(
 				"C:/Universita/Programmazione Orienta Agli Oggetti/Esercizi/Programmazione_Oggetti/info_" + num
-						+ ".txt");
+				 + ".txt");
 		PrintWriter printWriter = new PrintWriter(fileWriter);
 		printWriter.print(fileContent);
 
@@ -131,7 +132,8 @@ public class OperatoreTelefonico {
 		printWriter.close();
 	}
 
-	private SIM searchSimWithNumber(String num) {
+	private SIM searchSimWithNumber(String num) {	
+		
 		SIM finded = new SIM();
 		for (int i = 0; i < listOfSim.size(); i++) {
 			if (listOfSim.get(i).getNumeroDiTelefono().equals(num))
