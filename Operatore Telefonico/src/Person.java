@@ -7,10 +7,6 @@ public class Person {
 		this.cognome = cognome;
 	}
 
-	public Person() {
-	
-	}
-
 	public String getNome() {
 		return nome;
 	}
@@ -26,5 +22,9 @@ public class Person {
 	public void setCognome(String cognome) {
 		this.cognome = cognome;
 	}
-
+	
+	public String toString() {
+		return "Person [nome= " + nome + ", cognome= " + cognome + "]";
+	}
+	
 }

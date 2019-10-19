@@ -5,7 +5,7 @@ public class SIM {
 	private String numeroDiTelefono, puk;
 	private float creditoDisponibile;
 	private Date dataUltimaRicarica;
-	private Person proprietario;
+	Person proprietario;
 	private String[] promozioniAttive;
 	public List<Chiamata> chiamate;
 	private boolean portabilizzata;
@@ -21,7 +21,7 @@ public class SIM {
 	public SIM(Person proprietario, String numeroDiTelefono, String puk) {
 		this.proprietario = proprietario;
 		this.numeroDiTelefono = numeroDiTelefono;
-		this.setPuk(puk);
+		this.puk = puk;
 	}
 
 	/**
@@ -40,8 +40,7 @@ public class SIM {
 		this.portabilizzata = true;
 	}
 
-	public SIM() {
-	};
+
 
 	/**
 	 * Aggiunge una chiamata alla lista
@@ -65,11 +64,21 @@ public class SIM {
 		return minutiTotali;
 	}
 
+	/**
+	 * 
+	 * @param importo dato in input aggiorna il credito
+	 * @return credito disponibile aggiornato
+	 */
 	public float ricarica(float importo) {
 		creditoDisponibile += importo;
+		Date dataUltimaRicarica = new Date();
+		setDataUltimaRicarica(dataUltimaRicarica);
 		return creditoDisponibile;
 	}
 
+	/**
+	 * RETURN chiamate effettuate della sim.
+	 */
 	public void toStringChiamate() {
 		for (int i = 0; i < chiamate.size(); i++) {
 			System.out.println(i + ".Chiamata effettuata: " + chiamate.get(i).getNumero() + " tempo chiamata:"
@@ -225,6 +234,10 @@ public class SIM {
 		}
 		return giaAttiva;
 	}
+	
+	/**
+	 * Return array promozioni aggiornate con promozione disattivata
+	 */
 
 	public void disattivaPromozione() {
 		String promo;
@@ -250,6 +263,10 @@ public class SIM {
 		}
 
 	}
+	/**
+	 * 
+	 * @param promo promozione da disattivare nell'array
+	 */
 
 	public void disattivazionePromozione(String promo) {
 
@@ -262,7 +279,9 @@ public class SIM {
 
 	}
 
-
+/**
+ * RETURN stringa contenente le informazioni riguardanti la SIM
+ */
 	public String toString() {
 		return "SIM : numeroDiTelefono=" + numeroDiTelefono + "\n" + "nome=" + proprietario.getNome() + "\n"
 				+ "cognome=" + proprietario.getCognome() + "\n" + " creditoDisponibile=" + creditoDisponibile + "\n"
