@@ -39,5 +39,11 @@ class Chiamata {
 	public Boolean isReceived() {
 		return isReceived;
 	}
+
+	@Override
+	public String toString() {
+		return "Chiamata [numero= " + numero + ", duration= " + duration + ", isReceived= " + isReceived + "]";
+	}
+	
 	
 }

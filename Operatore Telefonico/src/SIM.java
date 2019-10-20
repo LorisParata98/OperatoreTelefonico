@@ -6,8 +6,8 @@ public class SIM {
 	private float creditoDisponibile;
 	private Date dataUltimaRicarica;
 	Person proprietario;
-	private String[] promozioniAttive;
-	public List<Chiamata> chiamate;
+	String[] promozioniAttive = new String[3];
+	public List<Chiamata> chiamate =new ArrayList<Chiamata>();
 	private boolean portabilizzata;
 	Scanner scan = new Scanner(System.in);
 
@@ -40,7 +40,8 @@ public class SIM {
 		this.portabilizzata = true;
 	}
 
-
+	public SIM() {
+	}
 
 	/**
 	 * Aggiunge una chiamata alla lista
@@ -128,7 +129,6 @@ public class SIM {
 	public void setDataUltimaRicarica(Date dataUltimaRicarica) {
 		this.dataUltimaRicarica = dataUltimaRicarica;
 	}
-	
 
 	public void setChiamateEffettuate(List<Chiamata> chiamateEffettuate) {
 		this.chiamate = chiamateEffettuate;
@@ -141,6 +141,7 @@ public class SIM {
 	public void setPortabilizzata(boolean portabilizzata) {
 		this.portabilizzata = portabilizzata;
 	}
+
 	public String getPuk() {
 		return puk;
 	}
@@ -223,18 +224,19 @@ public class SIM {
 	/**
 	 * 
 	 * @param promo
-	 * @return false se la promozione è già attiva 
+	 * @return false se la promozione è già attiva
 	 */
 	private boolean controlloPromozione(String promo) {
 		boolean giaAttiva = false;
 		for (int i = 0; i < promozioniAttive.length; i++) {
-			if (promozioniAttive[i].equals(promo))
+			if (promozioniAttive[i]!=null && promozioniAttive[i].equals(promo)) {
 				giaAttiva = true;
-			System.out.println("Promozione già attiva");
+				System.out.println("Promozione già attiva");
+			}
 		}
 		return giaAttiva;
 	}
-	
+
 	/**
 	 * Return array promozioni aggiornate con promozione disattivata
 	 */
@@ -263,6 +265,7 @@ public class SIM {
 		}
 
 	}
+
 	/**
 	 * 
 	 * @param promo promozione da disattivare nell'array
@@ -271,7 +274,7 @@ public class SIM {
 	public void disattivazionePromozione(String promo) {
 
 		for (int i = 0; i < promozioniAttive.length; i++) {
-			if (promozioniAttive[i].equals(promo)) {
+			if (promozioniAttive[i]!=null &&promozioniAttive[i].equals(promo)) {
 				promozioniAttive[i] = null;
 			}
 		}
@@ -279,15 +282,13 @@ public class SIM {
 
 	}
 
-/**
- * RETURN stringa contenente le informazioni riguardanti la SIM
- */
+	/**
+	 * RETURN stringa contenente le informazioni riguardanti la SIM
+	 */
 	public String toString() {
-		return "SIM : numeroDiTelefono=" + numeroDiTelefono + "\n" + "nome=" + proprietario.getNome() + "\n"
-				+ "cognome=" + proprietario.getCognome() + "\n" + " creditoDisponibile=" + creditoDisponibile + "\n"
-				+ " dataUltimaRicarica=" + dataUltimaRicarica + "\n" + " portabilizzata=" + portabilizzata + "\n";
+		return "SIM : Numero di telefono:  " + numeroDiTelefono + "\n" + "Nome=" + proprietario.getNome() + "\n"
+				+ "Cognome=" + proprietario.getCognome() + "\n" + "Credito Disponibile=" + creditoDisponibile + "\n"
+				+ "Data ultima ricarica=" + dataUltimaRicarica + "\n" + "Portabilizzata =" + portabilizzata + "\n";
 	}
-
-	
 
 }
