@@ -1,4 +1,5 @@
 import java.util.*;
+import java.security.acl.LastOwnerException;
 import java.time.*;
 
 public class SIM {
@@ -7,7 +8,7 @@ public class SIM {
 	private Date dataUltimaRicarica;
 	Person proprietario;
 	String[] promozioniAttive = new String[3];
-	public List<Chiamata> chiamate =new ArrayList<Chiamata>();
+	public List<Chiamata> chiamate = new ArrayList<Chiamata>();
 	private boolean portabilizzata;
 	Scanner scan = new Scanner(System.in);
 
@@ -229,7 +230,7 @@ public class SIM {
 	private boolean controlloPromozione(String promo) {
 		boolean giaAttiva = false;
 		for (int i = 0; i < promozioniAttive.length; i++) {
-			if (promozioniAttive[i]!=null && promozioniAttive[i].equals(promo)) {
+			if (promozioniAttive[i] != null && promozioniAttive[i].equals(promo)) {
 				giaAttiva = true;
 				System.out.println("Promozione già attiva");
 			}
@@ -274,7 +275,7 @@ public class SIM {
 	public void disattivazionePromozione(String promo) {
 
 		for (int i = 0; i < promozioniAttive.length; i++) {
-			if (promozioniAttive[i]!=null &&promozioniAttive[i].equals(promo)) {
+			if (promozioniAttive[i] != null && promozioniAttive[i].equals(promo)) {
 				promozioniAttive[i] = null;
 			}
 		}
@@ -282,13 +283,34 @@ public class SIM {
 
 	}
 
+	public boolean isAttiva() {
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.YEAR, -1);
+		Date oneYearPast = cal.getTime();
+		return dataUltimaRicarica.after(oneYearPast);
+	}
+
 	/**
 	 * RETURN stringa contenente le informazioni riguardanti la SIM
 	 */
 	public String toString() {
-		return "SIM : Numero di telefono:  " + numeroDiTelefono + "\n" + "Nome=" + proprietario.getNome() + "\n"
-				+ "Cognome=" + proprietario.getCognome() + "\n" + "Credito Disponibile=" + creditoDisponibile + "\n"
-				+ "Data ultima ricarica=" + dataUltimaRicarica + "\n" + "Portabilizzata =" + portabilizzata + "\n";
+		StringBuilder builder = new StringBuilder();
+		builder.append("Number: ").append(numeroDiTelefono);
+		builder.append(" Proprietario: ").append(proprietario.toString());
+		builder.append(" Numero di chiamate: ").append(getNumberOfCalls());
+		builder.append(" Originale? : ").append(portabilizzata);
+		builder.append(" Stato sim : ").append(isAttiva());
+		return builder.toString();
+	}
+
+	private int getNumberOfCalls() {
+		int contatore = 0;
+		for (int i = 0; i < chiamate.size(); i++) {
+			if (chiamate.get(i).isReceived()) {
+				contatore++;
+			}
+		}
+		return contatore;
 	}
 
 }

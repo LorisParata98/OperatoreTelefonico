@@ -187,33 +187,23 @@ public class OperatoreTelefonico {
 		return false;
 	}
 
-	@SuppressWarnings("deprecation")
-	// controlla se la scheda è ancora attiva
-	public static boolean isAttiva(String numeroDaControllare) {
-		boolean simAttiva = false;
-		Date dataUltimaRicarica = new Date(); // stampa data attuale
-		dataUltimaRicarica.setYear(dataUltimaRicarica.getYear() - 1);// sottrae 1 anno dalla data attuale
-		if (searchSimWithNumber(numeroDaControllare).getDataUltimaRicarica().after(dataUltimaRicarica)) {
-			simAttiva = true;
-		}
-		return simAttiva;
-	}
-
 	/**
 	 * 
 	 * @param num
 	 * @throws IOException RETURN File avente le informazioni riguardanti una
 	 *                     determinata sim.
 	 */
-	public static void saveDataInFile(String num) throws IOException {
-
-		String fileContent = "";
-		FileWriter fileWriter = new FileWriter("C:/Users/Loris/git/OperatoreTelefonico/info_" + num + ".txt");
-		PrintWriter printWriter = new PrintWriter(fileWriter);
-		printWriter.print(fileContent);
-		printWriter.printf(searchSimWithNumber(num).toString());
-		printWriter.println("Stato Sim : " + isAttiva(num));
-		printWriter.close();
+	public static void saveSimDataToFile(SIM sim) {
+		String fileName = sim.getNumeroDiTelefono() + "_info.txt";
+		BufferedWriter fileWriter = null;
+		try {
+			fileWriter = new BufferedWriter(new FileWriter(fileName));
+			fileWriter.write(sim.toString());
+		} catch (IOException ioe) {
+			System.out.println(ioe.getStackTrace());
+		} finally {
+			FileCloser.close(fileWriter);
+		}		
 	}
 
 	/**
@@ -237,12 +227,12 @@ public class OperatoreTelefonico {
 		searchSimWithNumber("3486785337").ricarica(15);
 		searchSimWithNumber("3486785337").insertChiamate(new Chiamata("3409538475", null, false));
 		// ChiamateEffettuateAdUnNumero("3486785337");
-		portabilizzaSim();
+	//	portabilizzaSim();
 		// System.out.println(searchSimWithNumber("3486785337").chiamate.toString());
 		// searchSimWithNumber("3486785337").attivaPromozione();
 		// searchSimWithNumber("3486785337").disattivaPromozione();
 		// System.out.println(Arrays.toString(searchSimWithNumber("3486785337").promozioniAttive));
-		saveDataInFile("3486785337");
+		saveSimDataToFile(searchSimWithNumber("3486785337"));
 		System.out.println(listOfSim.toString());
 
 	}
